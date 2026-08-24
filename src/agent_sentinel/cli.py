@@ -10,8 +10,8 @@ from typing import TextIO
 
 from .adapters import TetragonAdapter
 from .contracts import BehaviorContract, ContractError
-from .detector import DetectionEngine, ResponseAction
-from .responders import KubernetesResponder
+from .detector import Decision, DetectionEngine, ResponseAction
+from .responders import KubernetesResponder, ResponsePlan
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -53,7 +53,7 @@ def _stream(path: str) -> tuple[TextIO, bool]:
     return Path(path).open(encoding="utf-8"), True
 
 
-def _print_text(decision: object, plan: object | None = None) -> None:
+def _print_text(decision: Decision, plan: ResponsePlan | None = None) -> None:
     action = decision.action.value.upper()
     event = decision.event
     detail = decision.findings[0].code if decision.findings else "EXPECTED_BEHAVIOR"
@@ -71,7 +71,11 @@ def _run_evaluate(args: argparse.Namespace) -> int:
     adapter = TetragonAdapter()
     responder = KubernetesResponder()
     threshold_reached = False
-    source, should_close = _stream(args.events)
+    try:
+        source, should_close = _stream(args.events)
+    except OSError as exc:
+        print(f"unable to read events from {args.events!r}: {exc}", file=sys.stderr)
+        return 2
     try:
         for number, line in enumerate(source, start=1):
             if not line.strip():
