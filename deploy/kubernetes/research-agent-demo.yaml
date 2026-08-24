@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: research-agent
+  namespace: agent-lab
+automountServiceAccountToken: false
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: research-agent
+  namespace: agent-lab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: research-agent
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: research-agent
+        sentinel.shivam.dev/protected: "true"
+        sentinel.shivam.dev/intent: literature-review
+    spec:
+      serviceAccountName: research-agent
+      automountServiceAccountToken: false
+      containers:
+        - name: agent
+          image: python:3.13-slim
+          command: ["python3", "-c", "import time; time.sleep(3600)"]
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 96Mi
+          volumeMounts:
+            - name: workspace
+              mountPath: /workspace
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: workspace
+          emptyDir: {}
+        - name: tmp
+          emptyDir: {}

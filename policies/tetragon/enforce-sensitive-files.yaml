@@ -1,0 +1,28 @@
+# Opt-in enforcement policy. Validate BPF LSM support and test in a disposable cluster first.
+apiVersion: cilium.io/v1alpha1
+kind: TracingPolicy
+metadata:
+  name: agent-sentinel-sensitive-file-enforcement
+spec:
+  podSelector:
+    matchLabels:
+      sentinel.shivam.dev/protected: "true"
+  options:
+    - name: policy-mode
+      value: enforce
+  lsmhooks:
+    - hook: file_open
+      args:
+        - index: 0
+          type: file
+      selectors:
+        - matchArgs:
+            - index: 0
+              operator: Prefix
+              values:
+                - /var/run/secrets/
+                - /run/secrets/
+                - /root/.ssh/
+          matchActions:
+            - action: Override
+              argError: -13

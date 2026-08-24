@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use Agent Sentinel in research, please cite this repository and its white paper."
+title: "Agent Sentinel: Intent-Aware Runtime Detection and Containment for AI Agents"
+type: software
+authors:
+  - family-names: Kumar
+    given-names: Shivam
+repository-code: "https://github.com/shivam2003-dev/agent-sentinel-ebpf"
+url: "https://github.com/shivam2003-dev/agent-sentinel-ebpf"
+version: 0.1.0
+date-released: 2026-08-25
+license: Apache-2.0

@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="430" viewBox="0 0 1200 430" role="img" aria-labelledby="title desc">
+  <title id="title">Agent Sentinel architecture</title>
+  <desc id="desc">An AI agent and intent contract feed a Kubernetes workload. Tetragon observes kernel events. Agent Sentinel correlates the events and triggers graduated containment.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1">
+      <stop offset="0" stop-color="#07152b"/>
+      <stop offset="1" stop-color="#102947"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#000" flood-opacity="0.22"/>
+    </filter>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#46d7c5"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="430" rx="24" fill="url(#bg)"/>
+  <text x="54" y="56" fill="#f8fbff" font-family="Inter,Arial,sans-serif" font-size="25" font-weight="700">INTENT → RUNTIME → RESPONSE</text>
+  <text x="54" y="87" fill="#9bb2cc" font-family="Inter,Arial,sans-serif" font-size="15">Task-conditioned authorization correlated with kernel evidence</text>
+
+  <g filter="url(#shadow)" font-family="Inter,Arial,sans-serif">
+    <rect x="54" y="130" width="205" height="180" rx="18" fill="#153354" stroke="#2b557e"/>
+    <circle cx="91" cy="170" r="18" fill="#46d7c5"/>
+    <text x="83" y="177" fill="#07152b" font-size="20" font-weight="700">1</text>
+    <text x="83" y="218" fill="#fff" font-size="20" font-weight="700">AI Agent</text>
+    <text x="83" y="246" fill="#b9cadc" font-size="14">Declares active intent</text>
+    <text x="83" y="269" fill="#b9cadc" font-size="14">Invokes bounded tools</text>
+
+    <rect x="326" y="130" width="205" height="180" rx="18" fill="#153354" stroke="#2b557e"/>
+    <circle cx="363" cy="170" r="18" fill="#46d7c5"/>
+    <text x="355" y="177" fill="#07152b" font-size="20" font-weight="700">2</text>
+    <text x="355" y="218" fill="#fff" font-size="20" font-weight="700">Kubernetes Pod</text>
+    <text x="355" y="246" fill="#b9cadc" font-size="14">Exec · file · network</text>
+    <text x="355" y="269" fill="#b9cadc" font-size="14">Secret · API behavior</text>
+
+    <rect x="598" y="130" width="205" height="180" rx="18" fill="#153354" stroke="#2b557e"/>
+    <circle cx="635" cy="170" r="18" fill="#46d7c5"/>
+    <text x="627" y="177" fill="#07152b" font-size="20" font-weight="700">3</text>
+    <text x="627" y="218" fill="#fff" font-size="20" font-weight="700">eBPF Sensor</text>
+    <text x="627" y="246" fill="#b9cadc" font-size="14">Tetragon events plus</text>
+    <text x="627" y="269" fill="#b9cadc" font-size="14">workload identity</text>
+
+    <rect x="870" y="130" width="276" height="180" rx="18" fill="#173c58" stroke="#46d7c5"/>
+    <circle cx="907" cy="170" r="18" fill="#ffbd59"/>
+    <text x="899" y="177" fill="#07152b" font-size="20" font-weight="700">4</text>
+    <text x="899" y="218" fill="#fff" font-size="20" font-weight="700">Agent Sentinel</text>
+    <text x="899" y="246" fill="#c9d9e8" font-size="14">Correlate and score</text>
+    <text x="899" y="273" fill="#7ee0d4" font-size="13" font-weight="700">ALLOW · RESTRICT · CONTAIN</text>
+  </g>
+
+  <g stroke="#46d7c5" stroke-width="3" fill="none" marker-end="url(#arrow)">
+    <path d="M267 220 H314"/>
+    <path d="M539 220 H586"/>
+    <path d="M811 220 H858"/>
+  </g>
+
+  <rect x="54" y="348" width="1092" height="42" rx="11" fill="#0b2038" stroke="#254a6e"/>
+  <text x="75" y="375" fill="#9bb2cc" font-family="Inter,Arial,sans-serif" font-size="14">TRUSTED:</text>
+  <text x="150" y="375" fill="#e9f2fa" font-family="Inter,Arial,sans-serif" font-size="14">node kernel · Tetragon sensor · contract issuer · quarantine controller</text>
+  <text x="744" y="375" fill="#9bb2cc" font-family="Inter,Arial,sans-serif" font-size="14">UNTRUSTED:</text>
+  <text x="840" y="375" fill="#e9f2fa" font-family="Inter,Arial,sans-serif" font-size="14">agent process · tools · retrieved content</text>
+</svg>

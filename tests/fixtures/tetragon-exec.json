@@ -1,0 +1,18 @@
+{
+  "time": "2026-08-24T10:10:00Z",
+  "process_exec": {
+    "process": {
+      "binary": "/bin/bash",
+      "arguments": "-c id",
+      "docker": "aabbccdd",
+      "pod": {
+        "namespace": "agent-lab",
+        "name": "research-agent-demo",
+        "labels": [
+          "app.kubernetes.io/name=research-agent",
+          "sentinel.shivam.dev/intent=literature-review"
+        ]
+      }
+    }
+  }
+}

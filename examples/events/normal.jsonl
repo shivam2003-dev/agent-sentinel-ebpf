@@ -1,0 +1,3 @@
+{"event_type":"process_exec","timestamp":"2026-08-24T10:00:00Z","namespace":"agent-lab","pod":"research-agent-demo","intent_id":"literature-review","executable":"/usr/local/bin/python3","arguments":"/workspace/agent.py"}
+{"event_type":"file_access","timestamp":"2026-08-24T10:00:01Z","namespace":"agent-lab","pod":"research-agent-demo","intent_id":"literature-review","executable":"/usr/local/bin/python3","path":"/workspace/notes/runtime-security.md","access":"write"}
+{"event_type":"network_connect","timestamp":"2026-08-24T10:00:02Z","namespace":"agent-lab","pod":"research-agent-demo","intent_id":"literature-review","executable":"/usr/local/bin/python3","destination":"export.arxiv.org","port":443,"protocol":"tcp"}

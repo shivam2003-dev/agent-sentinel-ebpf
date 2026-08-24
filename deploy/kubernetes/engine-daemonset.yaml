@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: agent-sentinel
+  namespace: agent-sentinel-system
+  labels:
+    app.kubernetes.io/name: agent-sentinel
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: agent-sentinel
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: agent-sentinel
+    spec:
+      serviceAccountName: agent-sentinel
+      containers:
+        - name: engine
+          image: ghcr.io/shivam2003-dev/agent-sentinel-ebpf:0.1.0
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - >-
+              tail -n +1 -F /var/log/tetragon/tetragon.log |
+              agent-sentinel evaluate
+              --contract /etc/agent-sentinel/research-agent.yaml
+              --events - --format json --apply-response
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            readOnlyRootFilesystem: true
+          resources:
+            requests:
+              cpu: 25m
+              memory: 48Mi
+            limits:
+              cpu: 250m
+              memory: 128Mi
+          volumeMounts:
+            - name: contract
+              mountPath: /etc/agent-sentinel
+              readOnly: true
+            - name: tetragon-log
+              mountPath: /var/log/tetragon
+              readOnly: true
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: contract
+          configMap:
+            name: agent-sentinel-contract
+        - name: tetragon-log
+          hostPath:
+            path: /var/log/tetragon
+            type: DirectoryOrCreate
+        - name: tmp
+          emptyDir: {}

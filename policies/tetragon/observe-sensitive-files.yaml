@@ -1,0 +1,24 @@
+apiVersion: cilium.io/v1alpha1
+kind: TracingPolicy
+metadata:
+  name: agent-sentinel-sensitive-file-observation
+spec:
+  podSelector:
+    matchLabels:
+      sentinel.shivam.dev/protected: "true"
+  options:
+    - name: policy-mode
+      value: monitor
+  lsmhooks:
+    - hook: file_open
+      args:
+        - index: 0
+          type: file
+      selectors:
+        - matchArgs:
+            - index: 0
+              operator: Prefix
+              values:
+                - /var/run/secrets/
+                - /run/secrets/
+                - /root/.ssh/

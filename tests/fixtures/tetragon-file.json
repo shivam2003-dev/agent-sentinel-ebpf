@@ -1,0 +1,17 @@
+{
+  "time": "2026-08-24T10:10:01Z",
+  "process_lsm": {
+    "process": {
+      "binary": "/usr/local/bin/python3",
+      "pod": {
+        "namespace": "agent-lab",
+        "name": "research-agent-demo",
+        "labels": {"sentinel.shivam.dev/intent": "literature-review"}
+      }
+    },
+    "hook": "file_open",
+    "args": [
+      {"file_arg": {"path": "/var/run/secrets/kubernetes.io/serviceaccount/token"}}
+    ]
+  }
+}

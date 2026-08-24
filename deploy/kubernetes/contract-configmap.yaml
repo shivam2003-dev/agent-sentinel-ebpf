@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: agent-sentinel-contract
+  namespace: agent-sentinel-system
+data:
+  research-agent.yaml: |
+    apiVersion: sentinel.shivam.dev/v1alpha1
+    kind: AgentBehaviorContract
+    metadata:
+      name: research-agent
+    spec:
+      selector:
+        namespace: agent-lab
+        podPattern: research-agent-*
+      thresholds:
+        restrict: 40
+        contain: 80
+      hardDeny:
+        executables: [/bin/bash, /bin/sh, /usr/bin/nc, /usr/bin/nsenter]
+        files:
+          - /var/run/secrets/kubernetes.io/serviceaccount/**
+          - /run/secrets/**
+          - /root/.ssh/**
+      intents:
+        - id: literature-review
+          description: Search approved research services and write notes.
+          allow:
+            executables: [/usr/local/bin/python*, /usr/bin/git]
+            files: [/workspace/**, /tmp/agent-sentinel/**, /usr/local/lib/python*/**]
+            network:
+              - hostSuffix: arxiv.org
+                ports: [443]
+              - host: api.github.com
+                ports: [443]
+            kubernetesOperations: []

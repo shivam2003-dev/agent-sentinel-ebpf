@@ -1,0 +1,14 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: agent-sentinel-quarantine
+  namespace: agent-lab
+spec:
+  podSelector:
+    matchLabels:
+      sentinel.shivam.dev/state: quarantined
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress: []
+  egress: []
