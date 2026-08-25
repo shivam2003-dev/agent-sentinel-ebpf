@@ -69,7 +69,7 @@ class DetectionEngine:
         if not self.contract.matches_workload(event.namespace, event.pod):
             return Decision(ResponseAction.IGNORE, 0, event)
 
-        findings: list[Finding] = []
+        findings: list[Finding] = self._evaluate_hard_deny(event)
         intent = self.contract.intents.get(event.intent_id)
         if intent is None:
             findings.append(
@@ -112,21 +112,37 @@ class DetectionEngine:
             controls = ()
         return Decision(action, current, event, tuple(findings), controls)
 
+    def _evaluate_hard_deny(self, event: RuntimeEvent) -> list[Finding]:
+        """Absolute prohibitions, enforced regardless of intent binding."""
+
+        if event.event_type is EventType.PROCESS_EXEC and self.contract.is_denied_executable(
+            event.executable
+        ):
+            return [
+                Finding(
+                    "HARD_DENY_EXECUTABLE",
+                    Severity.CRITICAL,
+                    100,
+                    f"executable is explicitly denied: {event.executable}",
+                )
+            ]
+        if event.event_type is EventType.FILE_ACCESS and self.contract.is_denied_file(event.path):
+            return [
+                Finding(
+                    "HARD_DENY_FILE",
+                    Severity.CRITICAL,
+                    100,
+                    f"sensitive path is explicitly denied: {event.path}",
+                )
+            ]
+        return []
+
     def _evaluate_against_intent(self, event: RuntimeEvent, intent: IntentRule) -> list[Finding]:
         findings: list[Finding] = []
         allow = intent.allow
 
         if event.event_type is EventType.PROCESS_EXEC:
-            if self.contract.is_denied_executable(event.executable):
-                findings.append(
-                    Finding(
-                        "HARD_DENY_EXECUTABLE",
-                        Severity.CRITICAL,
-                        100,
-                        f"executable is explicitly denied: {event.executable}",
-                    )
-                )
-            elif not allow.permits_executable(event.executable):
+            if not allow.permits_executable(event.executable):
                 findings.append(
                     Finding(
                         "EXECUTABLE_OUTSIDE_INTENT",
@@ -137,16 +153,7 @@ class DetectionEngine:
                 )
 
         elif event.event_type is EventType.FILE_ACCESS:
-            if self.contract.is_denied_file(event.path):
-                findings.append(
-                    Finding(
-                        "HARD_DENY_FILE",
-                        Severity.CRITICAL,
-                        100,
-                        f"sensitive path is explicitly denied: {event.path}",
-                    )
-                )
-            elif not allow.permits_file(event.path):
+            if not allow.permits_file(event.path):
                 findings.append(
                     Finding(
                         "FILE_OUTSIDE_INTENT",

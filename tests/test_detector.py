@@ -88,6 +88,29 @@ def test_kubernetes_api_violation_causes_containment() -> None:
     assert decision.findings[0].code == "KUBERNETES_API_OUTSIDE_INTENT"
 
 
+def test_hard_deny_applies_even_without_bound_intent() -> None:
+    decision = engine().evaluate(
+        event(EventType.PROCESS_EXEC, intent_id="unknown", executable="/bin/bash")
+    )
+    assert decision.action is ResponseAction.CONTAIN
+    assert decision.risk_score == 100
+    codes = {finding.code for finding in decision.findings}
+    assert "HARD_DENY_EXECUTABLE" in codes
+    assert "INTENT_MISSING_OR_UNKNOWN" in codes
+
+
+def test_hard_denied_file_applies_even_without_bound_intent() -> None:
+    decision = engine().evaluate(
+        event(
+            EventType.FILE_ACCESS,
+            intent_id="",
+            path="/var/run/secrets/kubernetes.io/serviceaccount/token",
+        )
+    )
+    assert decision.action is ResponseAction.CONTAIN
+    assert decision.findings[0].code == "HARD_DENY_FILE"
+
+
 def test_repeated_deviations_accumulate_risk() -> None:
     detector = engine()
     first = detector.evaluate(
